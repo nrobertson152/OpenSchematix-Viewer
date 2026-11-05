@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openschematix-viewer"
+dynamic = ["version"]
+description = "Read-only viewer for OpenSchematix projects, with RevisionWorx revision status"
+readme = "README.md"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "Nate Robertson" }]
+requires-python = ">=3.10"
+# OpenSchematix supplies the file format, renderer, themes and widgets, so drawings look exactly the same.
+# Pinned to an exact commit: the viewer also uses OpenSchematix interface modules that are not its public API.
+dependencies = ["openschematix @ git+https://github.com/nrobertson152/OpenSchematix@0d7f94c96f93a94a1d344b28f038a97dbf5e938f"]
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Environment :: X11 Applications",
+    "Environment :: Win32 (MS Windows)",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "pyinstaller", "revisionworx @ git+https://github.com/nrobertson152/RevisionWorx@main"]
+
+[project.gui-scripts]
+openschematix-viewer = "osviewer.app:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "osviewer.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["osviewer*"]
+
+[tool.setuptools.package-data]
+osviewer = ["demo/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers"
+markers = ["gui: needs a working Tk root / graphical display (real or Xvfb)"]
